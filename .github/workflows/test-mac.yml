@@ -9,12 +9,12 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Make executable
-        run: chmod +x "Church Video Downloader.command"
+        run: chmod +x "ChurchVideoDownloader.command"
 
       - name: Run script with test video
         run: |
           # Pipe a short public domain video URL into the script
-          echo "https://www.youtube.com/watch?v=ZmXJnIGPNh8" | bash "Church Video Downloader.command"
+          echo "https://www.youtube.com/watch?v=ZmXJnIGPNh8" | bash "ChurchVideoDownloader.command"
 
       - name: Verify download exists
         run: |
