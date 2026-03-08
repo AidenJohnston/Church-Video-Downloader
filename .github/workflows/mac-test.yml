@@ -1,0 +1,15 @@
+- name: Test setup only
+        run: |
+          # Run the setup portion without downloading a video
+          DIR="$HOME/.church-downloader"
+          mkdir -p "$DIR"
+          curl -L "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos" -o "$DIR/yt-dlp"
+          chmod +x "$DIR/yt-dlp"
+          "$DIR/yt-dlp" --version
+          echo "✅ yt-dlp installed and runs"
+
+          curl -L "https://evermeet.cx/ffmpeg/getrelease/ffmpeg/zip" -o "$DIR/ffmpeg.zip"
+          unzip -o "$DIR/ffmpeg.zip" -d "$DIR"
+          chmod +x "$DIR/ffmpeg"
+          "$DIR/ffmpeg" -version | head -1
+          echo "✅ ffmpeg installed and runs"
