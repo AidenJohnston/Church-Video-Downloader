@@ -25,7 +25,7 @@ if st.button("Download", type="primary"):
                     "merge_output_format": "mp4",
                     "extractor_args": {
                         "youtube": {
-                            "player_client": ["tv", "web_embedded", "web"],
+                            "player_client": ["web", "web_embedded"],
                         }
                     },
                     "http_headers": {
