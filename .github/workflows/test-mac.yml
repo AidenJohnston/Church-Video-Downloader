@@ -1,0 +1,22 @@
+name: Test on macOS
+
+on: workflow_dispatch # manual trigger from GitHub UI
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Make executable
+        run: chmod +x "Church Video Downloader.command"
+
+      - name: Run script with test video
+        run: |
+          # Pipe a short public domain video URL into the script
+          echo "https://www.youtube.com/watch?v=jNQXAC9IVRw" | bash "Church Video Downloader.command"
+
+      - name: Verify download exists
+        run: |
+          echo "Files in Downloads:"
+          ls -la ~/Downloads/*.mp4
