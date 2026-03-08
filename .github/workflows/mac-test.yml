@@ -1,60 +1,45 @@
----
-- name: Test setup and binaries
-  run: >
-    DIR="$HOME/.church-downloader"
+name: Test on macOS
 
-    mkdir -p "$DIR"
+on: workflow_dispatch
 
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
 
-    # yt-dlp
+      - name: Test setup and binaries
+        run: |
+          DIR="$HOME/.church-downloader"
+          mkdir -p "$DIR"
 
-    curl -L "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos" -o "$DIR/yt-dlp"
+          # yt-dlp
+          curl -L "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos" -o "$DIR/yt-dlp"
+          chmod +x "$DIR/yt-dlp"
+          "$DIR/yt-dlp" --version
+          echo "✅ yt-dlp works"
 
-    chmod +x "$DIR/yt-dlp"
+          # ffmpeg
+          curl -L "https://evermeet.cx/ffmpeg/getrelease/ffmpeg/zip" -o "$DIR/ffmpeg.zip"
+          unzip -o "$DIR/ffmpeg.zip" -d "$DIR"
+          chmod +x "$DIR/ffmpeg"
+          "$DIR/ffmpeg" -version | head -1
+          echo "✅ ffmpeg works"
 
-    "$DIR/yt-dlp" --version
+          # deno
+          ARCH=$(uname -m)
+          if [ "$ARCH" = "arm64" ]; then
+            DENO_URL="https://github.com/denoland/deno/releases/latest/download/deno-aarch64-apple-darwin.zip"
+          else
+            DENO_URL="https://github.com/denoland/deno/releases/latest/download/deno-x86_64-apple-darwin.zip"
+          fi
+          curl -L "$DENO_URL" -o "$DIR/deno.zip"
+          unzip -o "$DIR/deno.zip" -d "$DIR"
+          chmod +x "$DIR/deno"
+          "$DIR/deno" --version
+          echo "✅ deno works"
 
-    echo "✅ yt-dlp works"
-
-
-    # ffmpeg
-
-    curl -L "https://evermeet.cx/ffmpeg/getrelease/ffmpeg/zip" -o "$DIR/ffmpeg.zip"
-
-    unzip -o "$DIR/ffmpeg.zip" -d "$DIR"
-
-    chmod +x "$DIR/ffmpeg"
-
-    "$DIR/ffmpeg" -version | head -1
-
-    echo "✅ ffmpeg works"
-
-
-    # deno
-
-    ARCH=$(uname -m)
-
-    if [ "$ARCH" = "arm64" ]; then
-      DENO_URL="https://github.com/denoland/deno/releases/latest/download/deno-aarch64-apple-darwin.zip"
-    else
-      DENO_URL="https://github.com/denoland/deno/releases/latest/download/deno-x86_64-apple-darwin.zip"
-    fi
-
-    curl -L "$DENO_URL" -o "$DIR/deno.zip"
-
-    unzip -o "$DIR/deno.zip" -d "$DIR"
-
-    chmod +x "$DIR/deno"
-
-    "$DIR/deno" --version
-
-    echo "✅ deno works"
-
-
-    # Verify yt-dlp sees the JS runtime
-
-    export PATH="$DIR:$PATH"
-
-    "$DIR/yt-dlp" --print-traffic https://www.youtube.com/watch?v=jNQXAC9IVRw 2>&1 | head -5 || true
-
-    echo "✅ all binaries installed and discoverable"
+          # Verify yt-dlp sees the JS runtime
+          export PATH="$DIR:$PATH"
+          "$DIR/yt-dlp" --print-traffic https://www.youtube.com/watch?v=jNQXAC9IVRw 2>&1 | head -5 || true
+          echo "✅ all binaries installed and discoverable"
