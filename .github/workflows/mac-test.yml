@@ -1,4 +1,4 @@
-- name: Test setup and binaries
+      - name: Test setup and binaries
         run: |
           DIR="$HOME/.church-downloader"
           mkdir -p "$DIR"
